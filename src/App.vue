@@ -14,8 +14,9 @@
 
     <div class="grid-container" v-else>
       <div v-for="(col, colIndex) in grid" :key="colIndex" class="column">
-        <div v-for="(cell, rowIndex) in col" :key="rowIndex" class="grid-item"
-          :class="{ 'player1': cell == PLAYER1, 'player2': cell == PLAYER2 }" @click="dropChip(rowIndex)">
+        <div v-for="(cell, rowIndex) in col" :key="rowIndex" class="grid-item" :style="{
+          'backgroundColor': (cell === PLAYER1) ? player1BackgroundColor : ((cell === PLAYER2) ? player2BackgroundColor : 'transparent')
+        }" @click="dropChip(rowIndex)">
           {{ cell }}
         </div>
       </div>
@@ -31,15 +32,15 @@
 const ROWS = 6;
 const COLS = 7;
 const EMPTY_STATE = 0;
-const PLAYER1 = 1;
-const PLAYER2 = 2;
 
 export default {
   data() {
     return {
       grid: [],
+      PLAYER1: 1,
+      PLAYER2: 2,
       winner: null,
-      currentPlayer: PLAYER1,
+      currentPlayer: 1,
       colorConfirmed: false,
       player1BackgroundColor: 'transparent', // Default background color for Player 1
       player2BackgroundColor: 'transparent', // Default background color for Player 2
@@ -68,12 +69,14 @@ export default {
       while (rowNumber >= 0) {
         if (this.grid[rowNumber][col] === EMPTY_STATE) {
           this.grid[rowNumber][col] = this.currentPlayer;
+          this.setPlayerColor(false)
+
           if (this.checkWin(rowNumber, col)) {
             this.winner = true;
           } else if (this.checkDraw()) {
             this.winner = false;
           }
-          this.currentPlayer = this.currentPlayer === PLAYER1 ? PLAYER2 : PLAYER1;
+          this.currentPlayer = this.currentPlayer === this.PLAYER1 ? this.PLAYER2 : this.PLAYER1;
           break;
         }
         rowNumber--;
@@ -161,15 +164,22 @@ export default {
     },
 
     changeCurrentPlayer(player) {
-      if (player === 1) {
-        this.player1BackgroundColor = '#e74c3c'; // Red for Player 1
-        this.player2BackgroundColor = 'transparent'; // Reset Player 2 color
-      } else {
-        this.player1BackgroundColor = 'transparent'; // Reset Player 1 color
-        this.player2BackgroundColor = '#3498db'; // Blue for Player 2
-      }
-
       this.currentPlayer = player;
+      this.setPlayerColor(true);
+    },
+
+    setPlayerColor(resetFlag) {
+      if (this.currentPlayer === this.PLAYER1) {
+        this.player1BackgroundColor = '#e74c3c'; // Red for Player 1
+        if (resetFlag) {
+          this.player2BackgroundColor = 'transparent'
+        }
+      } else {
+        this.player2BackgroundColor = '#3498db'; // Blue for Player 2
+        if (resetFlag) {
+          this.player1BackgroundColor = 'transparent'
+        }
+      }
     },
 
     confirmColor() {
@@ -214,19 +224,35 @@ body {
 .grid-item {
   border-radius: 50%;
   width: 60px;
-  /* Increase chip size */
   height: 60px;
-  /* Increase chip size */
-  background: #eee;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   font-size: 18px;
   font-weight: bold;
-  color: black;
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+  color: #606060;
+  /* Change text color to a dark color */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  margin: 8px;
+  position: relative;
+  /* Add relative positioning for the ::before pseudo-element */
 }
+
+.grid-item.player1 {
+  background: #e74c3c;
+  /* Red for Player 1 */
+  color: #fff;
+  /* Set text color to white for better contrast */
+}
+
+.grid-item.player2 {
+  background: #3498db;
+  /* Blue for Player 2 */
+  color: #fff;
+  /* Set text color to white for better contrast */
+}
+
 
 .grid-item div {
   width: 100%;
