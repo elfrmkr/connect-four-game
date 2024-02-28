@@ -2,10 +2,10 @@
   <div class="container">
     <div class="player-selection" v-if="!colorConfirmed">
       <p>Select your color:</p>
-      <label>
+      <label :style="{ backgroundColor: player1BackgroundColor }">
         <input type="radio" @click="changeCurrentPlayer(1)" name="playerSelection" /> Player 1 (Red)
       </label>
-      <label>
+      <label :style="{ backgroundColor: player2BackgroundColor }">
         <input type="radio" @click="changeCurrentPlayer(2)" name="playerSelection" /> Player 2 (Blue)
       </label>
       <button @click="confirmColor">Confirm Selection</button>
@@ -41,6 +41,8 @@ export default {
       winner: null,
       currentPlayer: PLAYER1,
       colorConfirmed: false,
+      player1BackgroundColor: 'transparent', // Default background color for Player 1
+      player2BackgroundColor: 'transparent', // Default background color for Player 2
     };
   },
 
@@ -159,6 +161,14 @@ export default {
     },
 
     changeCurrentPlayer(player) {
+      if (player === 1) {
+        this.player1BackgroundColor = '#e74c3c'; // Red for Player 1
+        this.player2BackgroundColor = 'transparent'; // Reset Player 2 color
+      } else {
+        this.player1BackgroundColor = 'transparent'; // Reset Player 1 color
+        this.player2BackgroundColor = '#3498db'; // Blue for Player 2
+      }
+
       this.currentPlayer = player;
     },
 
@@ -176,27 +186,24 @@ export default {
 </script>
 
 <style scoped>
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* Center vertically */
-  height: 100vh;
-  /* 100% of the viewport height */
-  margin-top: 20px;
-}
-
-.player-selection {
-  margin-bottom: 20px;
 }
 
 .grid-container {
   display: grid;
   grid-template-rows: repeat(6, 1fr);
-  /* Adjust the number of rows as needed */
   gap: 5px;
-  /* Adjust the gap between grid items */
 }
 
 .column {
@@ -206,8 +213,10 @@ export default {
 
 .grid-item {
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  /* Increase chip size */
+  height: 60px;
+  /* Increase chip size */
   background: #eee;
   display: flex;
   justify-content: center;
@@ -217,8 +226,6 @@ export default {
   font-weight: bold;
   color: black;
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
-  /* Add a subtle shadow */
-
 }
 
 .grid-item div {
@@ -227,25 +234,59 @@ export default {
   border-radius: 50%;
 }
 
-
-.player1 {
-  background-color: #ff6347;
-  /* Light Coral */
+.player-selection {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
+  padding: 20px;
+  background-color: #2c3e509c;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  /* Futuristic shadow */
 }
 
-.player2 {
-  background-color: #4169e1;
-  /* Royal Blue */
+.player-selection p {
+  color: #fff;
+  font-size: 16px;
+  margin-bottom: 20px;
 }
 
-.player-info {
-  margin-top: 10px;
+label {
+  position: relative;
+  cursor: pointer;
+  color: #fff;
+  font-size: 14px;
+  margin-bottom: 15px;
+  padding: 10px 20px;
+  border-color: rgba(10, 139, 135, 0.358);
+  border-style: solid;
+  border-width: 1.5px;
+  /* Default border color */
+  border-radius: 10px;
 }
+
+input[type="radio"] {
+  display: none;
+}
+
 
 button {
-  margin-top: 20px;
+  background-color: #2ecc71;
+  /* Greenish color for button */
+  color: #fff;
   padding: 10px 20px;
-  font-size: 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 10px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+  /* Smooth hover transition */
+}
+
+button:hover {
+  background-color: #27ae60;
+  /* Darker green on hover */
 }
 </style>
