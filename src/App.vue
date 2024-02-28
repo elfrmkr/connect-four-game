@@ -1,21 +1,21 @@
-<script setup>
-</script>
-
 <template>
   <div class="container">
-    <div class="player-selection">
+    <div class="player-selection" v-if="!colorConfirmed">
       <p>Select your color:</p>
       <label>
-        <input type="radio" v-model="playerColor" value="player1" /> Player 1 (Red)
+        <input type="radio" @click="changeCurrentPlayer(1)" name="playerSelection" /> Player 1 (Red)
       </label>
       <label>
-        <input type="radio" v-model="playerColor" value="player2" /> Player 2 (Blue)
+        <input type="radio" @click="changeCurrentPlayer(2)" name="playerSelection" /> Player 2 (Blue)
       </label>
+      <button @click="confirmColor">Confirm Selection</button>
     </div>
-    <div class="grid-container">
+
+
+    <div class="grid-container" v-else>
       <div v-for="(col, colIndex) in grid" :key="colIndex" class="column">
         <div v-for="(cell, rowIndex) in col" :key="rowIndex" class="grid-item"
-          :class="{ 'player1': cell === PLAYER1, 'player2': cell === PLAYER2 }" @click="dropChip(rowIndex)">
+          :class="{ 'player1': cell == PLAYER1, 'player2': cell == PLAYER2 }" @click="dropChip(rowIndex)">
           {{ cell }}
         </div>
       </div>
@@ -41,7 +41,7 @@ export default {
       grid: [],
       winner: null,
       currentPlayer: PLAYER1,
-      playerColor: "player1",
+      colorConfirmed: false,
     };
   },
 
@@ -78,7 +78,7 @@ export default {
         rowNumber--;
       }
       if (rowNumber < 0) {
-        console.log("no row to play");
+        window.alert("no row to play");
       }
       console.table(this.grid);
     },
@@ -105,7 +105,7 @@ export default {
         if (this.grid[row][i] === this.currentPlayer) {
           horizontalCount++;
           if (horizontalCount === 4) {
-            console.log(`player ${this.currentPlayer} wins`);
+            window.alert(`player ${this.currentPlayer} wins`);
           }
         } else {
           horizontalCount = 0
@@ -119,7 +119,7 @@ export default {
           if (this.grid[j][i] === this.currentPlayer) {
             diagonalCount++;
             if (diagonalCount === 4) {
-              console.log(`player ${this.currentPlayer} wins`);
+              window.alert(`player ${this.currentPlayer} wins`);
             }
           } else {
             diagonalCount = 0;
@@ -133,7 +133,7 @@ export default {
           if (this.grid[j][i] === this.currentPlayer) {
             diagonalCount++;
             if (diagonalCount === 4) {
-              console.log(`player ${this.currentPlayer} wins`);
+              window.alert(`player ${this.currentPlayer} wins`);
             }
           } else {
             diagonalCount = 0;
@@ -143,7 +143,7 @@ export default {
 
       if (verticalCount >= 4 || horizontalCount >= 4 || diagonalCount >= 4) {
         this.winner = true;
-        console.log(`player ${this.currentPlayer} wins`);
+        window.alert(`player ${this.currentPlayer} wins`);
         return true;
       }
 
@@ -158,10 +158,18 @@ export default {
       return true;
     },
 
+    changeCurrentPlayer(player) {
+      this.currentPlayer = player;
+    },
+
+    confirmColor() {
+      this.colorConfirmed = true;
+    },
+
     resetGame() {
       this.grid = this.generateGrid(ROWS, COLS);
       this.winner = null;
-      this.currentPlayer = PLAYER1;
+      this.colorConfirmed = false;
     },
   },
 };
@@ -172,6 +180,10 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  /* Center vertically */
+  height: 100vh;
+  /* 100% of the viewport height */
   margin-top: 20px;
 }
 
@@ -204,7 +216,17 @@ export default {
   font-size: 18px;
   font-weight: bold;
   color: black;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+  /* Add a subtle shadow */
+
 }
+
+.grid-item div {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
 
 .player1 {
   background-color: #ff6347;
