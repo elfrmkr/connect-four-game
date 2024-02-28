@@ -21,8 +21,7 @@
       </div>
     </div>
     <div class="player-info">
-      <p v-if="winner !== null">{{ winner ? `Player ${currentPlayer} wins!` : 'It\'s a draw!' }}</p>
-      <p v-else>Current Turn: Player {{ currentPlayer }}</p>
+      <p v-if="!winner">Current Turn: Player {{ currentPlayer }}</p>
     </div>
     <button @click="resetGame">Reset Game</button>
   </div>
@@ -84,15 +83,18 @@ export default {
     },
 
     checkWin(row, col) {
-      let verticalCount = 0;
-      let horizontalCount = 0;
-      let diagonalCount = 0;
+      if (this.checkDiagonalWin(row, col) || this.checkReverseDiagonalWin(row, col)) {
+        window.alert(`Player ${this.currentPlayer} wins`);
+        return true;
+      }
 
-      //col 
+      // Check vertical
+      let verticalCount = 0;
       for (let i = row; i < ROWS; i++) {
         if (this.grid[i][col] === this.currentPlayer) {
           verticalCount++;
           if (verticalCount === 4) {
+            window.alert(`Player ${this.currentPlayer} wins`);
             return true;
           }
         } else {
@@ -100,53 +102,51 @@ export default {
         }
       }
 
-      //col -3 to col + 3 
+      // Check horizontal
+      let horizontalCount = 0;
       for (let i = 0; i < COLS; i++) {
         if (this.grid[row][i] === this.currentPlayer) {
           horizontalCount++;
           if (horizontalCount === 4) {
-            window.alert(`player ${this.currentPlayer} wins`);
+            window.alert(`Player ${this.currentPlayer} wins`);
+            return true;
           }
         } else {
-          horizontalCount = 0
+          horizontalCount = 0;
         }
       }
 
-      //diagonal
-      // Diagonal from bottom-left to top-right
-      for (let i = 0; i < COLS; i++) {
-        for (let j = 0; j < ROWS; j++) {
-          if (this.grid[j][i] === this.currentPlayer) {
-            diagonalCount++;
-            if (diagonalCount === 4) {
-              window.alert(`player ${this.currentPlayer} wins`);
-            }
-          } else {
-            diagonalCount = 0;
+      return false; // No win detected
+    },
+
+    checkDiagonalWin(row, col) {
+      let diagonalCount = 0;
+      for (let i = 0; i < ROWS; i++) {
+        if (row + i < ROWS && col + i < COLS && this.grid[row + i][col + i] === this.currentPlayer) {
+          diagonalCount++;
+          if (diagonalCount === 4) {
+            return true;
           }
+        } else {
+          diagonalCount = 0;
         }
       }
+      return false;
+    },
 
-      // Diagonal from top-left to bottom-right
-      for (let i = 0; i < COLS; i++) {
-        for (let j = ROWS - 1; j >= 0; j--) {
-          if (this.grid[j][i] === this.currentPlayer) {
-            diagonalCount++;
-            if (diagonalCount === 4) {
-              window.alert(`player ${this.currentPlayer} wins`);
-            }
-          } else {
-            diagonalCount = 0;
+    checkReverseDiagonalWin(row, col) {
+      let diagonalCount = 0;
+      for (let i = 0; i < ROWS; i++) {
+        if (row - i >= 0 && col + i < COLS && this.grid[row - i][col + i] === this.currentPlayer) {
+          diagonalCount++;
+          if (diagonalCount === 4) {
+            return true;
           }
+        } else {
+          diagonalCount = 0;
         }
       }
-
-      if (verticalCount >= 4 || horizontalCount >= 4 || diagonalCount >= 4) {
-        this.winner = true;
-        window.alert(`player ${this.currentPlayer} wins`);
-        return true;
-      }
-
+      return false;
     },
 
     checkDraw() {
