@@ -1,13 +1,15 @@
 <template>
     <div class="grid-container">
         <div v-for="(col, colIndex) in grid" :key="colIndex" class="column">
-            <div v-for="(cell, rowIndex) in col" :key="rowIndex" class="grid-item" :style="{
+            <div v-for="(cell, rowIndex) in col" :key="rowIndex" class="grid-item falling-chip" :style="{
                 'backgroundColor': (cell === PLAYER1) ? player1BackgroundColor : ((cell === PLAYER2) ? player2BackgroundColor : 'transparent')
             }" @click="dropChip(rowIndex)">
                 {{ cell }}
             </div>
         </div>
 
+        <game-result-modal v-if="winner" :win-message="'Player ' + currentPlayer + ' wins'" :player="currentPlayer"
+            @new-game="resetGame" />
         <div class="player-info">
             <p v-if="!winner">Current Turn: Player {{ currentPlayer }}</p>
         </div>
@@ -17,13 +19,17 @@
 </template>
 
 <script>
+import GameResultModal from '@/components/GameResultModal.vue'; // Adjust the path based on your project structure
+
 const ROWS = 6;
 const COLS = 7;
 const EMPTY_STATE = 0;
 
 export default {
     props: ['player'],
-
+    components: {
+        GameResultModal,
+    },
     data() {
         return {
             grid: [],
@@ -38,6 +44,7 @@ export default {
 
     mounted() {
         this.grid = this.generateGrid(ROWS, COLS);
+
     },
 
     methods: {
@@ -64,7 +71,7 @@ export default {
                     } else if (this.checkDraw()) {
                         this.winner = false;
                     }
-                    this.currentPlayer = this.currentPlayer === this.PLAYER1 ? this.PLAYER2 : this.PLAYER1;
+                    if (!this.winner) this.currentPlayer = this.currentPlayer === this.PLAYER1 ? this.PLAYER2 : this.PLAYER1;
                     break;
                 }
                 rowNumber--;
@@ -72,41 +79,47 @@ export default {
             if (rowNumber < 0) {
                 window.alert("no row to play");
             }
-            console.table(this.grid);
         },
 
         checkWin(row, col) {
-            if (this.checkDiagonalWin(row, col) || this.checkReverseDiagonalWin(row, col)) {
-                window.alert(`Player ${this.currentPlayer} wins`);
+            if (
+                this.checkDiagonalWin(row, col) ||
+                this.checkReverseDiagonalWin(row, col) ||
+                this.checkVerticalWin(row, col) ||
+                this.checkHorizontalWin(row, col)
+            ) {
                 return true;
             }
+            return false;
+        },
 
+        checkVerticalWin(row, col) {
             let verticalCount = 0;
             for (let i = row; i < ROWS; i++) {
                 if (this.grid[i][col] === this.currentPlayer) {
                     verticalCount++;
                     if (verticalCount === 4) {
-                        window.alert(`Player ${this.currentPlayer} wins`);
                         return true;
                     }
                 } else {
                     verticalCount = 0;
                 }
             }
+            return false;
+        },
 
+        checkHorizontalWin(row, col) {
             let horizontalCount = 0;
             for (let i = 0; i < COLS; i++) {
                 if (this.grid[row][i] === this.currentPlayer) {
                     horizontalCount++;
                     if (horizontalCount === 4) {
-                        window.alert(`Player ${this.currentPlayer} wins`);
                         return true;
                     }
                 } else {
                     horizontalCount = 0;
                 }
             }
-
             return false;
         },
 
@@ -182,8 +195,10 @@ export default {
     font-weight: bold;
     color: #606060;
     /* Change text color to a dark color */
+    border: 1px solid #474747;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-    margin: 8px;
+    margin-right: 10px;
+    margin-top: 10px;
     position: relative;
     /* Add relative positioning for the ::before pseudo-element */
 }
