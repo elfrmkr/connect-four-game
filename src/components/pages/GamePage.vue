@@ -20,10 +20,16 @@
 
 <script>
 import GameResultModal from '@/components/GameResultModal.vue'; // Adjust the path based on your project structure
+import {
+    findEmptyRow,
+    generateGrid,
+    checkDraw,
+    dropChip,
+    checkWin,
+} from '@/components/gameLogic.js';
 
 const ROWS = 6;
 const COLS = 7;
-const EMPTY_STATE = 0;
 
 export default {
     props: ['player'],
@@ -32,138 +38,40 @@ export default {
     },
     data() {
         return {
-            grid: [],
             PLAYER1: 1,
             PLAYER2: 2,
             winner: null,
             currentPlayer: this.player,
+            grid: generateGrid(ROWS, COLS),
             player1BackgroundColor: '#e74c3c',
             player2BackgroundColor: '#3498db'
         };
     },
 
-    mounted() {
-        this.grid = this.generateGrid(ROWS, COLS);
-
-    },
 
     methods: {
-        generateGrid(rows, cols) {
-            const grid = [];
-            for (let i = 0; i < rows; i++) {
-                grid.push(Array(cols).fill(EMPTY_STATE));
-            }
-            console.table(grid);
-            return grid;
-        },
-
         dropChip(col) {
             if (this.winner !== null) {
                 return;
             }
-            let rowNumber = ROWS - 1;
-            while (rowNumber >= 0) {
-                if (this.grid[rowNumber][col] === EMPTY_STATE) {
-                    this.grid[rowNumber][col] = this.currentPlayer;
+            const row = findEmptyRow(this.grid, col);
 
-                    if (this.checkWin(rowNumber, col)) {
-                        this.winner = true;
-                    } else if (this.checkDraw()) {
-                        this.winner = false;
-                    }
-                    if (!this.winner) this.currentPlayer = this.currentPlayer === this.PLAYER1 ? this.PLAYER2 : this.PLAYER1;
-                    break;
-                }
-                rowNumber--;
+            if (row !== -1) {
+                dropChip(this.grid, this.currentPlayer, col);
             }
-            if (rowNumber < 0) {
-                window.alert("no row to play");
+            if (checkWin(this.grid, this.currentPlayer, row, col)) {
+                this.winner = true;
+            } else if (checkDraw(this.grid)) {
+                this.winner = false;
             }
-        },
 
-        checkWin(row, col) {
-            if (
-                this.checkDiagonalWin(row, col) ||
-                this.checkReverseDiagonalWin(row, col) ||
-                this.checkVerticalWin(row, col) ||
-                this.checkHorizontalWin(row, col)
-            ) {
-                return true;
+            if (!this.winner) {
+                this.currentPlayer = this.currentPlayer === this.PLAYER1 ? this.PLAYER2 : this.PLAYER1;
             }
-            return false;
-        },
-
-        checkVerticalWin(row, col) {
-            let verticalCount = 0;
-            for (let i = row; i < ROWS; i++) {
-                if (this.grid[i][col] === this.currentPlayer) {
-                    verticalCount++;
-                    if (verticalCount === 4) {
-                        return true;
-                    }
-                } else {
-                    verticalCount = 0;
-                }
-            }
-            return false;
-        },
-
-        checkHorizontalWin(row, col) {
-            let horizontalCount = 0;
-            for (let i = 0; i < COLS; i++) {
-                if (this.grid[row][i] === this.currentPlayer) {
-                    horizontalCount++;
-                    if (horizontalCount === 4) {
-                        return true;
-                    }
-                } else {
-                    horizontalCount = 0;
-                }
-            }
-            return false;
-        },
-
-        checkDiagonalWin(row, col) {
-            let diagonalCount = 0;
-            for (let i = 0; i < ROWS; i++) {
-                if (row + i < ROWS && col + i < COLS && this.grid[row + i][col + i] === this.currentPlayer) {
-                    diagonalCount++;
-                    if (diagonalCount === 4) {
-                        return true;
-                    }
-                } else {
-                    diagonalCount = 0;
-                }
-            }
-            return false;
-        },
-
-        checkReverseDiagonalWin(row, col) {
-            let diagonalCount = 0;
-            for (let i = 0; i < ROWS; i++) {
-                if (row - i >= 0 && col + i < COLS && this.grid[row - i][col + i] === this.currentPlayer) {
-                    diagonalCount++;
-                    if (diagonalCount === 4) {
-                        return true;
-                    }
-                } else {
-                    diagonalCount = 0;
-                }
-            }
-            return false;
-        },
-
-        checkDraw() {
-            for (let i = 0; i < COLS; i++) {
-                if (this.grid[0][i] === EMPTY_STATE) {
-                    return false;
-                }
-            }
-            return true;
         },
 
         resetGame() {
-            this.grid = this.generateGrid(ROWS, COLS);
+            this.grid = generateGrid(ROWS, COLS);
             this.winner = null;
         },
     },
