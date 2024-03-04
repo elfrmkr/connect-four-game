@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "canvas-confetti": "^1.9.2",
-    "vue": "^3.4.15"
+    "vue": "^3.4.15",
+    "vue-toast-notification": "^3.1.2"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.3",
