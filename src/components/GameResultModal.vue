@@ -3,7 +3,7 @@
     <div class="game-result-modal">
         <div class="modal-content">
             <h2 class="text">Game Over!</h2>
-            <p class="text">Player {{ player }} wins!</p>
+            <p class="text">{{ winMessage }}</p>
             <button @click="startNewGame">New Game</button>
         </div>
     </div>
@@ -18,6 +18,10 @@ export default {
             type: Number,
             default: null,
         },
+        winMessage: {
+            type: String,
+            default: null,
+        }
     },
     mounted() {
         confetti();
