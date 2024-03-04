@@ -10,13 +10,26 @@
       <span :class="{ 'selected-label': selectedPlayer === 2 }">Player 2 (Blue)</span>
     </label>
     <button @click="confirmPlayer">Confirm Selection</button>
+
+    <div v-if="showToast">
+      <notification-toast :message="toastMessage" :type="type" :key="toastKey" />
+    </div>
   </div>
 </template>
 
 <script>
+import NotificationToast from '@/components/NotificationToast.vue'; // Adjust the path accordingly
+
 export default {
+  components: {
+    NotificationToast,
+  },
   data() {
     return {
+      toastKey: 0,
+      type: 'error',
+      showToast: false,
+      toastMessage: '',
       selectedPlayer: null,
       player1OptionColor: '#e74c3c',
       player2OptionColor: '#3498db',
@@ -30,7 +43,13 @@ export default {
       this.updateBorderColors();
     },
     confirmPlayer() {
-      this.$emit('confirm-player', { selectedPlayer: this.selectedPlayer });
+      if (this.selectedPlayer) {
+        this.$emit('confirm-player', { selectedPlayer: this.selectedPlayer });
+      } else {
+        this.showToast = true;
+        this.toastMessage = "You need to select a player!"
+        this.toastKey += 1; // Incrementing the key to force re-render
+      }
     },
     updateBorderColors() {
       this.player1BorderColor = this.selectedPlayer === 1 ? 'white' : 'rgba(10, 139, 135, 0.358)';
