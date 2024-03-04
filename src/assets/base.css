@@ -5,11 +5,8 @@
   --vt-c-white-mute: #f2f2f2;
 
   --vt-c-black: #1e1e1e;
-  /* Change to a slightly lighter black color */
   --vt-c-black-soft: #252525;
-  /* Change to a slightly lighter black-soft color */
   --vt-c-black-mute: #2b2b2b;
-  /* Change to a slightly lighter black-mute color */
 
   --vt-c-indigo: #2c3e50;
 
@@ -26,6 +23,11 @@
 
 /* semantic color variables for this project */
 :root {
+  --title-text-color-light: #ecf0f1;
+  /* Light grey suitable for dark background */
+  --title-text-color-dark: #2c3e50;
+  /* Dark color suitable for light background */
+
   --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);
   --color-background-mute: var(--vt-c-white-mute);
@@ -39,19 +41,55 @@
   --section-gap: 160px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: var(--vt-c-black);
-    --color-background-soft: var(--vt-c-black-soft);
-    --color-background-mute: var(--vt-c-black-mute);
+/* Add dark mode styles */
+html.dark-mode {
+  --title-text-color-light: var(--title-text-color-dark);
 
-    --color-border: var(--vt-c-divider-dark-2);
-    --color-border-hover: var(--vt-c-divider-dark-1);
+  --color-background: var(--vt-c-black);
+  --color-background-soft: var(--vt-c-black-soft);
+  --color-background-mute: var(--vt-c-black-mute);
 
-    --color-heading: var(--vt-c-text-dark-1);
-    --color-text: var(--vt-c-text-dark-2);
-  }
+  --color-border: var(--vt-c-divider-dark-2);
+  --color-border-hover: var(--vt-c-divider-dark-1);
+
+  --color-heading: var(--vt-c-text-dark-1);
+  --color-text: var(--vt-c-text-dark-2);
 }
+
+/* Updated color palette */
+:root {
+  --player-selection-background-light: rgba(236, 240, 241, 0.8);
+  /* A light background color suitable for dark theme */
+  --player-selection-background-dark: rgba(46, 49, 49, 0.8);
+  /* A dark background color suitable for light theme */
+
+  --player-selection-text-light: #2c3e50;
+  /* Dark text color suitable for dark theme */
+  --player-selection-text-dark: #ecf0f1;
+  /* Light text color suitable for light theme */
+
+  --player-selection-border-light: #2c3e50;
+  /* Dark border color suitable for dark theme */
+  --player-selection-border-dark: #ecf0f1;
+  /* Light border color suitable for light theme */
+
+  --button-background-light: #3498db;
+  /* A dark background color for the button in dark theme */
+  --button-background-dark: #27ae60;
+  /* A light background color for the button in light theme */
+}
+
+/* ... Rest of your styles ... */
+
+/* Add dark mode styles */
+html.dark-mode {
+  --player-selection-background-light: var(--player-selection-background-dark);
+  --player-selection-text-light: var(--player-selection-text-dark);
+  --player-selection-border-light: var(--player-selection-border-dark);
+  --button-background-light: var(--button-background-dark);
+}
+
+/* Rest of your main.css styles */
 
 *,
 *::before,
@@ -86,4 +124,70 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.game-title {
+  font-family: 'Arial', sans-serif;
+  /* Use the light color by default */
+  text-align: center;
+  margin: 20px 0;
+  font-size: 36px;
+  font-weight: bold;
+}
+
+/* Update your .player-selection styles */
+.player-selection {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Continue with the rest of your styles */
+.player-selection p {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+label {
+  position: relative;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 15px;
+  padding: 10px 20px;
+  border-style: solid;
+  border-width: 1.5px;
+  border-radius: 10px;
+  transition: border-color 0.3s ease;
+}
+
+
+input[type="radio"] {
+  display: none;
+}
+
+span {
+  display: inline-block;
+  width: 100%;
+}
+
+.selected-label {
+  font-weight: bold;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 14px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #27ae60;
 }
