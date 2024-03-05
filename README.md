@@ -7,9 +7,9 @@ Welcome to ChipConnect4 - a classic Connect 4 game with a twist!
 ChipConnect4 is an interactive web-based implementation of the popular Connect 4 game. It offers a sleek and modern user interface, making it easy and enjoyable to play.
 
 <p float="left">
-  <img src="src/assets/DarkModeConnect4.PNG" alt="Game Screenshot" width="30%" style="height: 380px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="src/assets/LightMode.PNG" alt="Second Image" width="30%" style="height: 380px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="src/assets/DarkModeWin.PNG" alt="Third Image" width="30%" style="height: 380px;">
+  <img src="src/assets/DarkModeConnect4.PNG" alt="Game Screenshot" width="30%" style="height: 360px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="src/assets/LightMode.PNG" alt="Second Image" width="30%" style="height: 360px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="src/assets/DarkModeWin.PNG" alt="Third Image" width="30%" style="height: 360px;">
 </p>
 
 
