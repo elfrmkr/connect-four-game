@@ -37,49 +37,36 @@ function checkHorizontalWin(grid, currentPlayer, row) {
 }
 
 function checkDiagonalWin(grid, currentPlayer, row, col) {
-    const diagonalCount1 = checkDiagonal(grid, currentPlayer, row, col, 1, -1);
-    const diagonalCount2 = checkDiagonal(grid, currentPlayer, row, col, 1, 1);
-
-    return diagonalCount1 >= 4 || diagonalCount2 >= 4;
+    return checkDiagonal(grid, currentPlayer, row, col, 1, -1) >= 4 || checkDiagonal(grid, currentPlayer, row, col, 1, 1) >= 4;
 }
 
 function checkReverseDiagonalWin(grid, currentPlayer, row, col) {
-    const diagonalCount1 = checkDiagonal(grid, currentPlayer, row, col, -1, -1);
-    const diagonalCount2 = checkDiagonal(grid, currentPlayer, row, col, -1, 1);
-
-    return diagonalCount1 >= 4 || diagonalCount2 >= 4;
+    return checkDiagonal(grid, currentPlayer, row, col, -1, -1) >= 4 || checkDiagonal(grid, currentPlayer, row, col, -1, 1) >= 4;
 }
 
 function checkDiagonal(grid, currentPlayer, row, col, rowDirection, colDirection) {
     let diagonalCount = 1; // Start with 1 to count the current position
-    let i = 1;
 
-    while (
-        row + i * rowDirection >= 0 &&
-        row + i * rowDirection < grid.length &&
-        col + i * colDirection >= 0 &&
-        col + i * colDirection < grid[0].length &&
-        grid[row + i * rowDirection][col + i * colDirection] === currentPlayer
-    ) {
-        diagonalCount++;
-        i++;
-    }
+    for (let i = 1; i >= -1; i -= 2) {
+        let currentRow = row + i * rowDirection;
+        let currentCol = col + i * colDirection;
 
-    i = 1;
-
-    while (
-        row - i * rowDirection >= 0 &&
-        row - i * rowDirection < grid.length &&
-        col - i * colDirection >= 0 &&
-        col - i * colDirection < grid[0].length &&
-        grid[row - i * rowDirection][col - i * colDirection] === currentPlayer
-    ) {
-        diagonalCount++;
-        i++;
+        while (
+            currentRow >= 0 &&
+            currentRow < ROWS &&
+            currentCol >= 0 &&
+            currentCol < COLS &&
+            grid[currentRow][currentCol] === currentPlayer
+        ) {
+            diagonalCount++;
+            currentRow += i * rowDirection;
+            currentCol += i * colDirection;
+        }
     }
 
     return diagonalCount;
 }
+
 
 
 function checkDraw(grid) {
